@@ -1,4 +1,4 @@
 <Solution>
-  <Project Path="5W5L/5W5L.csproj" />
-  <Project Path="FiveWordFiveLetters/FiveWordFiveLetters.csproj" />
+  <Project Path="5W5L/_5W5L.csproj" />
+  <Project Path="WPFApp/WPFApp.csproj" Id="31c48e03-b372-4aa6-a68d-82e0dcb0b09e" />
 </Solution>
