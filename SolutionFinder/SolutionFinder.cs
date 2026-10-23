@@ -28,8 +28,8 @@
             }
             Console.WriteLine("_masks: {0}", bitMaskDictionary.Count());
             _masks = bitMaskDictionary.Keys.Order().ToArray();
-            Console.WriteLine("mask: {0:b26} -> word: {1}", _masks[0], bitMaskDictionary[_masks[0]]);
-            Console.WriteLine("mask: {0:b26} -> word: {1}", _masks[1], bitMaskDictionary[_masks[1]]);
+            Console.WriteLine("mask: {0:b26} -> word: {1}", _masks[12], bitMaskDictionary[_masks[12]]);
+            Console.WriteLine("mask: {0:b26} -> word: {1}", _masks[13], bitMaskDictionary[_masks[13]]);
             return _words.Length;
         }
 
@@ -44,19 +44,16 @@
             return mask;
         }
 
-
-
         public string[] FindSolutions()
         {
             int count = 0;
             int processingCount = 0;
             List<string> solutions = new List<string>();
             //RecursiveFind("", _words.Length - 1, solutions);
-            BitMaskFinder(0, _words.Length - 1, solutions);
+            BitMaskFinder(0, _words.Length - 1, solutions, new int[0]);
 
             return solutions.ToArray();
         }
-
 
         /*
         private void RecursiveFind(string usedWords, int startIndex, List<string> solutions)
@@ -82,20 +79,29 @@
         */
 
         // Cook some shit here, plz. future ben, we're all counting on you.
-        private void BitMaskFinder(int usedMask, int startIndex, List<string> solutions)
+        // future ben here aka present ben, done did the cook. stole willy code, which is mads code. soooo ty ty mads
+        private void BitMaskFinder(int usedMask, int startIndex, List<string> solutions, int[] words)
         {
-            for (int i = startIndex; i >= 0; i--)
+            if (words.Count() == _numberOfWords)
             {
-                if (i != 0)
+                //TODO: add solutions
+
+                Console.WriteLine("{0:b26}", usedMask);
+                foreach (var mask in words)
                 {
-                    Console.WriteLine("I'm at 0!");
-                    continue;
+                    Console.WriteLine(bitMaskDictionary[mask]);
                 }
-                int joinedMask = _masks[i];
-                Console.WriteLine("GETR");
-                if (joinedMask != 0)
-                    continue;
-                BitMaskFinder(joinedMask, i - 1, solutions);
+                return;
+            }
+
+            for (var i = startIndex; i >= 0; i--)
+            {
+                if ((usedMask & _masks[i]) == 0)
+                {
+                    var newWords = words.ToList();
+                    newWords.Add(_masks[i]);
+                    BitMaskFinder(usedMask | _masks[i], i - 1, solutions, newWords.ToArray());
+                }
             }
         }
     }
