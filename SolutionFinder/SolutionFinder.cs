@@ -7,9 +7,10 @@
 
         string[] _words;
         int[] _masks;
-        private Dictionary<int, string> bitMaskDictionary = new Dictionary<int, string>();
+        public Dictionary<int, string> _bitMaskDictionary = new Dictionary<int, string>();
 
-        public SolutionFinder(int wordLength, int numberOfWords)
+       
+        public SolutionFinder(int wordLength, int numberOfWords) // Puller fra "Program.cs" hvor wordLength og numberOfWords' værdiere bliver sat.
         {
             if (wordLength * numberOfWords > 26)
                 throw new ArgumentOutOfRangeException("Kræver mere end 26 bogstaver");
@@ -17,23 +18,23 @@
             _wordLength = wordLength;
         }
 
-        public int LoadWords(string file)
+        public int LoadWords(string file) // Puller fra "Program.cs" og putter hvert gyldigt ord ind i ordbogen.
         {
             _words = File.ReadAllLines(file)
                 .Where(word => word.Length == _wordLength && word.Distinct().Count() == _wordLength).ToArray();
 
             foreach (var word in _words)
             {
-                bitMaskDictionary.TryAdd(WordToMask(word), word);
+                _bitMaskDictionary.TryAdd(WordToMask(word), word);
             }
-            Console.WriteLine("_masks: {0}", bitMaskDictionary.Count());
-            _masks = bitMaskDictionary.Keys.Order().ToArray();
-            Console.WriteLine("mask: {0:b26} -> word: {1}", _masks[12], bitMaskDictionary[_masks[12]]);
-            Console.WriteLine("mask: {0:b26} -> word: {1}", _masks[13], bitMaskDictionary[_masks[13]]);
+            Console.WriteLine("{0} masks found", _bitMaskDictionary.Count());
+            _masks = _bitMaskDictionary.Keys.Order().ToArray();
+            //Console.WriteLine("mask: {0:b26} -> word: {1}", _masks[12], _bitMaskDictionary[_masks[12]]);
+            //Console.WriteLine("mask: {0:b26} -> word: {1}", _masks[13], _bitMaskDictionary[_masks[13]]);
             return _words.Length;
         }
 
-        private int WordToMask(string word)
+        private int WordToMask(string word) // Forvandler hvert ord om til binær for at optimere programmet. 
         {
             int mask = 0;
             foreach (char ch in word)
@@ -46,50 +47,22 @@
 
         public string[] FindSolutions()
         {
-            int count = 0;
-            int processingCount = 0;
             List<string> solutions = new List<string>();
-            //RecursiveFind("", _words.Length - 1, solutions);
-            BitMaskFinder(0, _words.Length - 1, solutions, new int[0]);
+            BitMaskFinder(0, _masks.Length - 1, solutions, new int[0]);
 
             return solutions.ToArray();
         }
 
-        /*
-        private void RecursiveFind(string usedWords, int startIndex, List<string> solutions)
-        {
-            if (usedWords.Length == _numberOfWords * _wordLength)
-            {
-                for (var a = 1; a < _numberOfWords; a++)
-                {
-                    usedWords = usedWords.Insert(a * _wordLength + (a - 1), " ");
-                }
-                solutions.Add(usedWords);
-                return;
-            }
-
-            for (var i = startIndex; i >= 0; i--)
-            {
-                string joinedWords = string.Join("", usedWords, _words[i]);
-                if (joinedWords.Distinct().Count() != joinedWords.Length)
-                    continue;
-                RecursiveFind(joinedWords, i - 1, solutions);
-            }
-        }
-        */
-
-        // Cook some shit here, plz. future ben, we're all counting on you.
-        // future ben here aka present ben, done did the cook. stole willy code, which is mads code. soooo ty ty mads
-        private void BitMaskFinder(int usedMask, int startIndex, List<string> solutions, int[] words)
+        private void BitMaskFinder(int usedMask, int startIndex, List<string> solutions, int[] words) // Tilføj "foreach" loops til at øge hastigheden? ~3 minutter pr. words_alpha.txt
         {
             if (words.Count() == _numberOfWords)
             {
-                //TODO: add solutions
-
-                Console.WriteLine("{0:b26}", usedMask);
+                Console.WriteLine("Solution no.: {0:d3} | Bitmask: {1:b26}", solutions.Count(), usedMask);
                 foreach (var mask in words)
                 {
-                    Console.WriteLine(bitMaskDictionary[mask]);
+                    var solutionWords = words.Select(mask => _bitMaskDictionary[mask]);
+                    solutions.Add(string.Join(" ", solutionWords));
+                    return;
                 }
                 return;
             }
