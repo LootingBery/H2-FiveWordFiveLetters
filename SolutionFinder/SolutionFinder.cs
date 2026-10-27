@@ -2,14 +2,20 @@
 {
     public class SolutionFinder
     {
+        public event Action solutionNotification;
+        public event EventHandler? solutionFound;
         int _wordLength;
         int _numberOfWords;
 
         string[] _words;
         int[] _masks;
         public Dictionary<int, string> _bitMaskDictionary = new Dictionary<int, string>();
+        public event EventHandler<string> FoundSolution;
+        public event EventHandler<int> ProgressBar;
+        private int _maxValue;
+        public int FirstWords { get => _maxValue; private set; }
 
-       
+
         public SolutionFinder(int wordLength, int numberOfWords) // Puller fra "Program.cs" hvor wordLength og numberOfWords' værdiere bliver sat.
         {
             if (wordLength * numberOfWords > 26)
@@ -48,22 +54,20 @@
         public string[] FindSolutions()
         {
             List<string> solutions = new List<string>();
-            BitMaskFinder(0, _masks.Length - 1, solutions, new int[0]);
+            BitMaskFinder(0, _masks.Length - 1, solutions, new List<int>());
 
             return solutions.ToArray();
         }
 
-        private void BitMaskFinder(int usedMask, int startIndex, List<string> solutions, int[] words) // Tilføj "foreach" loops til at øge hastigheden? ~3 minutter pr. words_alpha.txt
+        private void BitMaskFinder(int usedMask, int startIndex, List<string> solutions, List<int> words) // Tilføj "foreach" loops til at øge hastigheden? ~3 minutter pr. words_alpha.txt
         {
+            _maxValue = _masks.Length;
             if (words.Count() == _numberOfWords)
             {
-                Console.WriteLine("Solution no.: {0:d3} | Bitmask: {1:b26}", solutions.Count(), usedMask);
-                foreach (var mask in words)
-                {
-                    var solutionWords = words.Select(mask => _bitMaskDictionary[mask]);
-                    solutions.Add(string.Join(" ", solutionWords));
-                    return;
-                }
+                var solutionWords = words.Select(mask => _bitMaskDictionary[mask]);
+                var solution = string.Join(", ", solutionWords);
+                solutions.Add(solution);
+                OnFoundSolution(solution);
                 return;
             }
 
@@ -71,11 +75,29 @@
             {
                 if ((usedMask & _masks[i]) == 0)
                 {
-                    var newWords = words.ToList();
+                    List<int> newWords = new List<int>(words);
                     newWords.Add(_masks[i]);
-                    BitMaskFinder(usedMask | _masks[i], i - 1, solutions, newWords.ToArray());
+                    BitMaskFinder(usedMask | _masks[i], i - 1, solutions, newWords);
+                }
+                if (usedMask == 0)
+                {
+                    OnProgressBar(FirstWords - i);
                 }
             }
+        }
+
+        protected virtual void OnFoundSolution(string eventSolution)
+        {
+            EventHandler<string> handler = FoundSolution;
+            if (handler != null)
+                handler(this, eventSolution);
+        }
+
+        protected virtual void OnProgressBar(int progress)
+        {
+            EventHandler<int> handler = ProgressBar;
+            if (handler != null)
+                handler(this, progress);
         }
     }
 }

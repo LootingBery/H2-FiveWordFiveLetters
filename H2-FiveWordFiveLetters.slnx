@@ -1,6 +1,7 @@
 <Solution>
   <Project Path="5W5L/_5W5L.csproj" />
   <Project Path="SecondAttemptConsole/SecondAttemptConsole.csproj" Id="ff3cb856-2c91-45d7-a41c-fd74ca8c218b" />
+  <Project Path="SecondAttemptWPF/SecondAttemptWPF.csproj" Id="b41e8cc4-f051-440d-b4b5-90c405220252" />
   <Project Path="SolutionFinder/SolutionFinderLibary.csproj" Id="b08b2394-a880-4991-8f9e-e8cb35e15514" />
   <Project Path="WPFApp/WPFApp.csproj" Id="31c48e03-b372-4aa6-a68d-82e0dcb0b09e" />
 </Solution>
