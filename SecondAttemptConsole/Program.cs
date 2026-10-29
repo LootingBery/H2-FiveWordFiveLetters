@@ -13,7 +13,7 @@ namespace SecondAttemptConsole
         {
             Stopwatch stopWatch = new Stopwatch();
             var solutionFinder = new SolutionFinder(5, 5);
-            solutionFinder.FoundSolution += FoundSolutionWriter;
+            solutionFinder.FoundWords += FoundSolutionWriter;
             solutionFinder.ProgressBar += ProgressBar;
             stopWatch.Start();
             _wordsLoaded = solutionFinder.LoadWords("C:\\Users\\temp\\source\\repos\\LootingBery\\H2-FiveWordFiveLetters\\5W5L\\new_beta.txt"); // Erstat med rigtig stig 

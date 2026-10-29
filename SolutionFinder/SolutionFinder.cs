@@ -1,17 +1,21 @@
-﻿namespace SolutionFinderLibary
+﻿using System.ComponentModel;
+
+namespace SolutionFinderLibary
 {
     public class SolutionFinder
     {
         public event Action solutionNotification;
         public event EventHandler? solutionFound;
+
         int _wordLength;
         int _numberOfWords;
 
         string[] _words;
         int[] _masks;
         public Dictionary<int, string> _bitMaskDictionary = new Dictionary<int, string>();
-        public event EventHandler<string> FoundSolution;
+        public event EventHandler<string> FoundWords;
         public event EventHandler<int> ProgressBar;
+        public event EventHandler<int> SolutionsFound;
         private int _maxValue;
         public int FirstWords { get => _maxValue; private set; }
 
@@ -55,6 +59,7 @@
         {
             List<string> solutions = new List<string>();
             BitMaskFinder(0, _masks.Length - 1, solutions, new List<int>());
+            OnSolutionsFound(solutions.Count());
 
             return solutions.ToArray();
         }
@@ -65,7 +70,7 @@
             if (words.Count() == _numberOfWords)
             {
                 var solutionWords = words.Select(mask => _bitMaskDictionary[mask]);
-                var solution = string.Join(", ", solutionWords);
+                var solution = string.Join(" ", solutionWords);
                 solutions.Add(solution);
                 OnFoundSolution(solution);
                 return;
@@ -86,9 +91,16 @@
             }
         }
 
+        protected virtual void OnSolutionsFound(int solutionsFound)
+        {
+            EventHandler<int> handler = SolutionsFound;
+            if (handler != null)
+                handler(this, solutionsFound);
+        }
+
         protected virtual void OnFoundSolution(string eventSolution)
         {
-            EventHandler<string> handler = FoundSolution;
+            EventHandler<string> handler = FoundWords;
             if (handler != null)
                 handler(this, eventSolution);
         }

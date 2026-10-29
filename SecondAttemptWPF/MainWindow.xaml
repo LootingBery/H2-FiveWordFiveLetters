@@ -6,8 +6,12 @@
         xmlns:local="clr-namespace:SecondAttemptWPF"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    <Grid>
-        <Button Content="Button" HorizontalAlignment="Left" VerticalAlignment="Top" Height="122" Width="158" Margin="400,200,0,0"/>
+    <Grid Background="#FFB9B9B9">
+        <Button Content="Start" HorizontalAlignment="Left" VerticalAlignment="Top" Height="80" Width="150" Margin="345,10,0,0" RenderTransformOrigin="0.493,-0.4"/>
+        <Button Content="Select File" HorizontalAlignment="Left" VerticalAlignment="Top" Height="80" Width="150" Margin="640,10,0,0"/>
+        <TextBox IsReadOnly="True" HorizontalAlignment="Left" Margin="10,223,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120"/>
+        <TextBox IsReadOnly="True" HorizontalAlignment="Left" Margin="220,223,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="120"/>
+        <ListBox d:ItemsSource="{d:SampleData ItemCount=5}" Margin="10,10,460,216" Background="#FF5F5F5F" Foreground="White"/>
 
     </Grid>
 </Window>
